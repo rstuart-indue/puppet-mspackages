@@ -1,88 +1,62 @@
 
 # mspackages
 
-Welcome to your new module. A short overview of the generated parts can be found in the PDK documentation at https://puppet.com/pdk/latest/pdk_generating_modules.html .
-
-The README template below provides a starting point with details about what information to include in your README.
+A Puppet Module that makes it easy to include Microsoft packages for Linux operating systems.
 
 #### Table of Contents
 
 1. [Description](#description)
-2. [Setup - The basics of getting started with mspackages](#setup)
-    * [What mspackages affects](#what-mspackages-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with mspackages](#beginning-with-mspackages)
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Limitations - OS compatibility, etc.](#limitations)
-5. [Development - Guide for contributing to the module](#development)
+2. [Usage](#usage)
+3. [Limitations](#limitations)
+4. [Development](#development)
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your module does and what kind of problems users can solve with it.
+This module sets up the required Microsoft repository based on distribution, and then installs the given package(s) with the environment variable `ACCEPT_EULA=Y` set.
 
-This should be a fairly short description helps the user decide if your module is what they want.
+This module was developed specifically to install the Microsoft ODBC Driver for SQL Server on Linux as Puppet's native `package` type does not support setting environment variables.
 
-## Setup
-
-### What mspackages affects **OPTIONAL**
-
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
-
-If there's more that they should know about, though, this is the place to mention:
-
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
-
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
-
-### Beginning with mspackages
-
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
+See https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-2017 for more information.
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your users how to use your module to solve problems, and be sure to include code examples. Include three to five examples of the most important or common tasks a user can accomplish with your module. Show users how to accomplish more complex tasks that involve different types, classes, and functions working in tandem.
+You can include packages either by defining resources within a manifest, or, within a hiera configuration file.
 
-## Reference
-
-This section is deprecated. Instead, add reference information to your code as Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your module. For details on how to add code comments and generate documentation with Strings, see the Puppet Strings [documentation](https://puppet.com/docs/puppet/latest/puppet_strings.html) and [style guide](https://puppet.com/docs/puppet/latest/puppet_strings_style.html)
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the root of your module directory and list out each of your module's classes, defined types, facts, functions, Puppet tasks, task plans, and resource types and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-  * The data type, if applicable.
-  * A description of what the element does.
-  * Valid values, if the data type doesn't make it obvious.
-  * Default value, if any.
-
-For example:
-
+1. `manifest.pp` example:
 ```
-### `pet::cat`
+  # Add the required Microsoft Packages Repo and
+  # Install the Linux Microsoft ODBC Driver for MS SQL Server.
+  mspackages { 'msodbcsql17':
+    ensure => present,
+  }
+```
+or to remove packages:
+```
+  mspackages { 'msodbcsql17':
+    ensure => absent,
+  }
+```
 
-#### Parameters
+2. `hieradata.yaml` example:
+For node-specific configurations, ensure your `manifest.pp` includes `hiera_include('classes')`. You can then update your node configuration as follows:
+```
+classes:
+  - 'mspackages::install'
 
-##### `meow`
-
-Enables vocalization in your cat. Valid options: 'string'.
-
-Default: 'medium-loud'.
+mspackages::install::packages:
+  - 'msodbcsql17'
+  - 'mssql-tools'
+```
+or to remove packages:
+```
+mspackages::remove::packages:
+  - 'mssql-tools'
 ```
 
 ## Limitations
 
-In the Limitations section, list any incompatibilities, known issues, or other warnings.
+RedHat/CentOS 6/7 are supported, with future implementation possible for Debian/Ubuntu compatibility.
 
 ## Development
 
-In the Development section, tell other users the ground rules for contributing to your project and how they should submit their work.
-
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.
+Additional distribution compatibility can be added as stubs are available in both `repository.pp` and `package.pp`.
