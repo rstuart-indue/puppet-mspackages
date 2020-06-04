@@ -5,3 +5,5 @@ fixtures:
   forge_modules:
      stdlib: "puppetlabs/stdlib"
      yumrepo_core: "puppetlabs/yumrepo_core"
+     apt: "puppetlabs/apt"
+     translate: "puppetlabs/translate"

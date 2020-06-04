@@ -21,7 +21,7 @@ define mspackages::package (
         'RedHat': {
             if $::operatingsystemmajrelease =~ /^(6|7).*?$/ {
                 if $ensure in ['present', 'installed'] {
-                    exec { "/usr/bin/yum install -y ${name}":
+                    exec { "/usr/bin/yum install --enablerepo=packages-microsoft-com-prod -y ${name}":
                         environment => 'ACCEPT_EULA=Y',
                         unless      => "/bin/rpm -q ${name}",
                         require     => Class['Mspackages::Repository'],
@@ -32,16 +32,33 @@ define mspackages::package (
                     }
                 }
             } else {
-                fail("${module_name} is not yet supported for OS ${::osfamily}} version ${::operatingsystemmajrelease}")
+                fail("${module_name} is not yet supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemmajrelease}")
             }
         }
 
         'Debian': {
-            fail("${module_name} is not yet supported for OS ${::osfamily}} version ${::operatingsystemmajrelease}")
+            if (
+                (($::operatingsystem == 'Ubuntu') and (versioncmp($::operatingsystemrelease, '14.04') >= 0)) or
+                (($::operatingsystem == 'Debian') and (versioncmp($::operatingsystemmajrelease, '8') >= 0))
+            ) {
+                if $ensure in ['present', 'installed'] {
+                    exec { "/usr/bin/apt install -y ${name}":
+                        environment => 'ACCEPT_EULA=Y',
+                        unless      => "/usr/bin/apt-mark showinstall | grep -q '${name}' && true || false",
+                        require     => Class['Mspackages::Repository'],
+                    }
+                } elsif $ensure == 'absent' {
+                    exec { "/usr/bin/apt remove -y ${name}":
+                        onlyif      => "/usr/bin/apt-mark showinstall | grep -q '${name}' && true || false",
+                    }
+                }
+            } else {
+                fail("${module_name} is not yet supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemrelease}")
+            }
         }
 
         default: {
-            fail("${module_name} is not supported for OS ${::osfamily}} version ${::operatingsystemmajrelease}")
+            fail("${module_name} is not supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemmajrelease}")
         }
     }
 }
