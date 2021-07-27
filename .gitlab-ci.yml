@@ -64,20 +64,20 @@ parallel_spec-Ruby 2.7.2-Puppet ~> 7:
   variables:
     PUPPET_GEM_VERSION: '~> 7'
 
-  pdk build:
-    stage: build
-    image: puppet/puppet-dev-tools:latest
-    before_script:
-      - gem install bundler
-      - bundle -v
-    script:
-      - pdk build
-    only:
-      changes:
-        - Gemfile
-        - "*.{json,pp,rb,yml}"
-      refs:
-        - main
-      artifacts:
-        paths:
-          - pkg/
+pdk build:
+  stage: build
+  image: puppet/puppet-dev-tools:latest
+  before_script:
+    - gem install bundler
+    - bundle -v
+  script:
+    - pdk build
+  only:
+    changes:
+      - Gemfile
+      - "*.{json,pp,rb,yml}"
+    refs:
+      - main
+  artifacts:
+    paths:
+      - pkg/
