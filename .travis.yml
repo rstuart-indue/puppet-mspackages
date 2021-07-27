@@ -40,6 +40,7 @@ jobs:
 branches:
   only:
     - main
+    - develop
     - /^v\d/
 notifications:
   email: false
