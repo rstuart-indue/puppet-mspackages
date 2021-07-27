@@ -7,8 +7,8 @@
 class mspackages::repository {
     case $::osfamily {
         'RedHat': {
-            # RHEL / CentOS version 6.x and 7.x
-            if $::operatingsystemmajrelease =~ /^(6|7).*?$/ {
+            # RHEL / CentOS version 6.x, 7.x, 8.x
+            if $::operatingsystemmajrelease =~ /^(6|7|8).*?$/ {
                 yumrepo { 'packages-microsoft-com-prod':
                     ensure   => present,
                     name     => 'packages-microsoft-com-prod',
@@ -26,10 +26,10 @@ class mspackages::repository {
         'Debian': {
             if ($::operatingsystem == 'Ubuntu') and (versioncmp($::operatingsystemrelease, '14.04') >= 0) {
                 # Ubuntu version uses YY.MM release
-                # FIXME: 20.04 packages may not yet exist, so drop to 19.10
-                if (versioncmp($::operatingsystemrelease, '20.04') >= 0) {
-                    $version_path = 'ubuntu/19.10'
-                    $release      = 'eoan'
+                # FIXME: 21.04 packages may not yet exist, so drop to 20.10
+                if (versioncmp($::operatingsystemrelease, '21.04') >= 0) {
+                    $version_path = 'ubuntu/20.10'
+                    $release      = 'groovy'
                 } else {
                     $version_path = "ubuntu/${::operatingsystemrelease}"
                 }
