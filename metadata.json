@@ -1,6 +1,6 @@
 {
   "name": "aitalian-mspackages",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "author": "Angelo Italiano",
   "summary": "A Puppet Module that makes it easy to include Microsoft packages for Linux operating systems.",
   "license": "Apache-2.0",
@@ -26,14 +26,16 @@
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
@@ -49,7 +51,9 @@
         "18.10",
         "19.04",
         "19.10",
-        "20.04"
+        "20.04",
+        "20.10",
+        "21.04"
       ]
     },
     {
@@ -67,7 +71,7 @@
       "version_requirement": ">= 4.10.0"
     }
   ],
-  "pdk-version": "1.18.0",
-  "template-url": "pdk-default#1.18.0",
-  "template-ref": "tags/1.18.0-0-g095317c"
+  "pdk-version": "2.1.1",
+  "template-url": "pdk-default#2.1.1",
+  "template-ref": "tags/2.1.1-0-g03daa92"
 }

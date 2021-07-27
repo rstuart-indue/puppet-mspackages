@@ -26,3 +26,4 @@
 .envrc
 /inventory.yaml
 .vscode/
+/spec/fixtures/litmus_inventory.yaml
