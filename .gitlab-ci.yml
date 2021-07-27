@@ -78,6 +78,7 @@ pdk build:
       - "*.{json,pp,rb,yml}"
     refs:
       - main
+      - develop
   artifacts:
     paths:
       - pkg/
