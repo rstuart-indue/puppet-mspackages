@@ -4,7 +4,7 @@
 #
 # @example
 #   include mspackages::repository
-class mspackages::repository {
+class mspackages::repository (
   Boolean $manage_repo = true,
 ) {
 
@@ -43,7 +43,7 @@ class mspackages::repository {
             }
 
             if !defined('$release') {
-                $release = $facts['os']['distro'['codename']
+                $release = $facts['os']['distro']['codename']
             }
 
             if defined('$version_path') {
