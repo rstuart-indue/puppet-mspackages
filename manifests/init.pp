@@ -8,11 +8,10 @@
 #       ensure =>  present,
 #   }
 define mspackages (
-    Variant[Stdlib::String, String[1]] $ensure = present,
     Boolean $manage_repo = true,
+    Enum['absent','present','installed'] $ensure = present,
 ) {
     validate_legacy(String, 'validate_string', $name)
-    validate_legacy(String, 'validate_re', $ensure, '^(present|installed|absent)$')
 
     $package_hash = {
         $name => {
