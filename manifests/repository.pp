@@ -4,7 +4,11 @@
 #
 # @example
 #   include mspackages::repository
-class mspackages::repository {
+class mspackages::repository (
+  Boolean $manage_repo = true,
+) {
+
+  if $manage_repo {
     case $::osfamily {
         'RedHat': {
             # RHEL / CentOS version 6.x, 7.x, 8.x
@@ -64,4 +68,5 @@ class mspackages::repository {
             fail("${module_name} is not supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemmajrelease}")
         }
     }
+  } # if $manage_repo
 }
