@@ -8,7 +8,7 @@
 #       ensure =>  present,
 #   }
 define mspackages (
-    Variant[Stdlib::Compat::String, String[1]] $ensure = present,
+    Variant[Stdlib::String, String[1]] $ensure = present,
 ) {
     validate_legacy(String, 'validate_string', $name)
     validate_legacy(String, 'validate_re', $ensure, '^(present|installed|absent)$')
