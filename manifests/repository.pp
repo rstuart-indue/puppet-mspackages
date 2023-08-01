@@ -43,7 +43,7 @@ class mspackages::repository {
             }
 
             if !defined('$release') {
-                $release = $facts['lsbdistcodename']
+                $release = $facts['os']['distro'['codename']
             }
 
             if defined('$version_path') {
