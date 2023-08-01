@@ -10,7 +10,7 @@
 #       ensure =>  present,
 #   }
 define mspackages::package (
-  Enum['absent','present',installed'] $ensure = present,
+  Enum['absent','present','installed'] $ensure = present,
 ) {
     validate_legacy(String, 'validate_string', $name)
 
