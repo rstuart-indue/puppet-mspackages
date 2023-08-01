@@ -5,37 +5,37 @@
 # @example
 #   include mspackages::repository
 class mspackages::repository {
-    case $::osfamily {
+    case $facts['os']['family'] {
         'RedHat': {
             # RHEL / CentOS version 6.x, 7.x, 8.x
-            if $::operatingsystemmajrelease =~ /^(6|7|8).*?$/ {
+            if $facts['os']['release']['major'] =~ /^(6|7|8).*?$/ {
                 yumrepo { 'packages-microsoft-com-prod':
                     ensure   => present,
                     name     => 'packages-microsoft-com-prod',
-                    descr    => "Microsoft Packages for Linux - RHEL ${::operatingsystemmajrelease}",
-                    baseurl  => "https://packages.microsoft.com/rhel/${::operatingsystemmajrelease}/prod/",
+                    descr    => "Microsoft Packages for Linux - RHEL ${facts['os']['release']['major']}",
+                    baseurl  => "https://packages.microsoft.com/rhel/${facts['os']['release']['major']}/prod/",
                     gpgkey   => 'https://packages.microsoft.com/keys/microsoft.asc',
                     gpgcheck => 1,
                     enabled  => 1,
                 }
             } else {
-                fail("${module_name} is not yet supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemmajrelease}")
+                fail("${module_name} is not yet supported for ${facts['os']['family']}-based OS ${facts['os']['name']} version ${facts['os']['release']['major']}")
             }
         }
 
         'Debian': {
-            if ($::operatingsystem == 'Ubuntu') and (versioncmp($::operatingsystemrelease, '14.04') >= 0) {
+            if ($facts['os']['name'] == 'Ubuntu') and (versioncmp($facts['os']['release']['full'], '14.04') >= 0) {
                 # Ubuntu version uses YY.MM release
                 # FIXME: 21.04 packages may not yet exist, so drop to 20.10
-                if (versioncmp($::operatingsystemrelease, '21.04') >= 0) {
+                if (versioncmp($facts['os']['release']['full'], '21.04') >= 0) {
                     $version_path = 'ubuntu/20.10'
                     $release      = 'groovy'
                 } else {
-                    $version_path = "ubuntu/${::operatingsystemrelease}"
+                    $version_path = "ubuntu/${facts['os']['release']['full']}"
                 }
-            } elsif ($::operatingsystem == 'Debian') and (versioncmp($::operatingsystemmajrelease, '8') >= 0) {
+            } elsif ($facts['os']['name'] == 'Debian') and (versioncmp($facts['os']['release']['major'], '8') >= 0) {
                 # Debian version uses major release
-                $version_path = "debian/${::operatingsystemmajrelease}"
+                $version_path = "debian/${facts['os']['release']['major']}"
             }
 
             if !defined('$release') {
@@ -45,7 +45,7 @@ class mspackages::repository {
             if defined('$version_path') {
                 apt::source { 'packages-microsoft-com-prod':
                     ensure        => present,
-                    comment       => "Microsoft Packages for Linux - ${::operatingsystem} ${::operatingsystemrelease}",
+                    comment       => "Microsoft Packages for Linux - ${facts['os']['name']} ${facts['os']['release']['full']}",
                     location      => "https://packages.microsoft.com/${version_path}/prod",
                     release       => $release,
                     pin           => 900,
@@ -56,12 +56,12 @@ class mspackages::repository {
                     },
                 }
             } else {
-                fail("${module_name} is not yet supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemrelease}")
+                fail("${module_name} is not yet supported for ${facts['os']['family']}-based OS ${facts['os']['name']} version ${facts['os']['release']['full']}")
             }
         }
 
         default: {
-            fail("${module_name} is not supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemmajrelease}")
+            fail("${module_name} is not supported for ${facts['os']['family']}-based OS ${facts['os']['name']} version ${facts['os']['release']['major']}")
         }
     }
 }

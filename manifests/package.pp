@@ -17,9 +17,9 @@ define mspackages::package (
 
     require mspackages::repository
 
-    case $::osfamily {
+    case $facts['os']['family'] {
         'RedHat': {
-            if $::operatingsystemmajrelease =~ /^(6|7|8).*?$/ {
+            if $facts['os']['release']['major'] =~ /^(6|7|8|9).*?$/ {
                 if $ensure in ['present', 'installed'] {
                     exec { "/usr/bin/yum install --enablerepo=packages-microsoft-com-prod -y ${name}":
                         environment => 'ACCEPT_EULA=Y',
@@ -32,14 +32,14 @@ define mspackages::package (
                     }
                 }
             } else {
-                fail("${module_name} is not yet supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemmajrelease}")
+                fail("${module_name} is not yet supported for ${facts['os']['family']}-based OS ${facts['os']['name']} version ${facts['os']['release']['major']}")
             }
         }
 
         'Debian': {
             if (
-                (($::operatingsystem == 'Ubuntu') and (versioncmp($::operatingsystemrelease, '14.04') >= 0)) or
-                (($::operatingsystem == 'Debian') and (versioncmp($::operatingsystemmajrelease, '8') >= 0))
+                (($facts['os']['name'] == 'Ubuntu') and (versioncmp($facts['os']['release']['full'], '14.04') >= 0)) or
+                (($facts['os']['name'] == 'Debian') and (versioncmp($facts['os']['release']['major'], '8') >= 0))
             ) {
                 if $ensure in ['present', 'installed'] {
                     exec { "/usr/bin/apt install -y ${name}":
@@ -53,12 +53,12 @@ define mspackages::package (
                     }
                 }
             } else {
-                fail("${module_name} is not yet supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemrelease}")
+                fail("${module_name} is not yet supported for ${facts['os']['family']}-based OS ${facts['os']['name']} version ${facts['os']['release']['full']}")
             }
         }
 
         default: {
-            fail("${module_name} is not supported for ${::osfamily}-based OS ${::operatingsystem} version ${::operatingsystemmajrelease}")
+            fail("${module_name} is not supported for ${facts['os']['family']}-based OS ${facts['os']['name']} version ${facts['os']['release']['major']}")
         }
     }
 }
